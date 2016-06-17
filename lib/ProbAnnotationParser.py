@@ -7,8 +7,8 @@ import subprocess
 import json
 import traceback
 import time
-from shock import Client as ShockClient
-from biokbase import log
+#from shock import Client as ShockClient
+#from biokbase import log
 
 # E values of less than 1E-200 are treated as 1E-200 to avoid log of 0 issues.
 MIN_EVALUE = 1E-200

@@ -5,8 +5,8 @@ import os
 import sys
 import traceback
 from ConfigParser import ConfigParser
-from biop3.ProbModelSEED.ProbAnnotationParser import ProbAnnotationParser
-from biokbase import log
+from ProbAnnotationParser import ProbAnnotationParser
+#from biokbase import log
 
 desc1 = '''
 NAME

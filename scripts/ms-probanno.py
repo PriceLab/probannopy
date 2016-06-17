@@ -2,13 +2,14 @@
 
 import argparse
 import json
+import pprint
 import sys
 import os
 import time
 import traceback
 import requests
-from biop3.ProbModelSEED.ProbAnnotationWorker import ProbAnnotationWorker
-from biop3.Workspace.WorkspaceClient import Workspace, ServerError as WorkspaceServerError, _read_inifile
+from ProbAnnotationWorker import ProbAnnotationWorker
+#from biop3.Workspace.WorkspaceClient import Workspace, ServerError as WorkspaceServerError, _read_inifile
 
 desc1 = '''
 NAME
@@ -111,38 +112,69 @@ def putObject(wsClient, reference, type, data):
 if __name__ == '__main__':
     # Parse options.
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, prog='ms-probanno', epilog=desc3)
-    parser.add_argument('genomeref', help='reference to genome object', action='store', default=None)
-    parser.add_argument('templateref', help='reference to template model object', action='store', default=None)
-    parser.add_argument('rxnprobsref', help='reference to rxnprobs object', action='store', default=None)
-    parser.add_argument('--ws-url', help='url of workspace service endpoint', action='store', dest='wsURL', default='https://p3.theseed.org/services/Workspace')
+
+    # Instead of using a genome object, just use a fasta file
+    # of protein sequences.
+    #parser.add_argument('genomeref', help='reference to genome object', action='store', default=None)
+    parser.add_argument('proteinfile', help='fasta file of protein sequences, downloaded from PATRIC', action='store', default=None)
+
+    # Instead of using a template model object, use a template file
+    # created using Build_Model_Template.py
+    # from ModelSEEDDatabase
+    #parser.add_argument('templateref', help='reference to template model object', action='store', default=None)
+    parser.add_argument('templatefile', help='json template file generated using Build_Model_Template.py', action='store', default=None)
+    #parser.add_argument('rxnprobsref', help='reference to rxnprobs object', action='store', default=None)
+
+    # Get output filename
+    parser.add_argument('rxnprobsfile', help='output filename for rxnprobs', action='store', default=None)
+
+#### BEGIN code needed only when getting objects from workspace
+#    parser.add_argument('--ws-url', help='url of workspace service endpoint', action='store', dest='wsURL', default='https://p3.theseed.org/services/Workspace')
     parser.add_argument('--token', help='token for user', action='store', dest='token', default=None)
+#### END code needed only when getting objects from workspace
+
     usage = parser.format_usage()
     parser.description = desc1 + '      ' + usage + desc2
     parser.usage = argparse.SUPPRESS
     args = parser.parse_args()
+    # TODO: parse genome_id from proteinfile
+    #  It is only used for messages and tmp filenames, so can be arbitrary
+    genome_id = "foo"
     
-    # Get the token from the config file if one is not provided.
-    if args.token is None:
-        authdata = _read_inifile()
-        args.token = authdata['token']
+    
+#### BEGIN code needed only when getting objects from workspace
+#    # Get the token from the config file if one is not provided.
+#    if args.token is None:
+#        authdata = _read_inifile()
+#        args.token = authdata['token']
      
     # Workaround for extraneous delimiter tacked on the end of references.
-    if args.genomeref[-2:] == '||':
-        args.genomeref = args.genomeref[:-2]
-    if args.templateref[-2:] == '||':
-        args.templateref = args.templateref[:-2]
+#    if args.genomeref[-2:] == '||':
+#        args.genomeref = args.genomeref[:-2]
+#    if args.templateref[-2:] == '||':
+#        args.templateref = args.templateref[:-2]
     
-    # Get the genome object from the workspace (for the features).
-    wsClient = Workspace(url=args.wsURL, token=args.token)
-    genome = getObject(wsClient, args.genomeref, args.token)
+#    # Get the genome object from the workspace (for the features).
+#    wsClient = Workspace(url=args.wsURL, token=args.token)
+#    genome = getObject(wsClient, args.genomeref, args.token)
+#### END code needed only when getting objects from workspace
 
     # Get the template object from the workspace (for the complexes and roles).
-    template = getObject(wsClient, args.templateref, args.token)
+#    template = getObject(wsClient, args.templateref, args.token)
+    # Create a dictionary from the json template file
+    json_data=open(args.templatefile).read()
+    template=json.loads(json_data)
+    # examples of using this dictionary
+#    print(template['biomasses'][0]['cellwall'])
+#    print(template['biomasses'][0]['templateBiomassComponents'][2]['coefficient'])
+    pp=pprint.PrettyPrinter(indent=4)
+#    pp.pprint(template)
 
     # Build a dictionary to look up roles in the template by ID.
     roles = dict()
     for index in range(len(template['roles'])):        
         roles[template['roles'][index]['id']] = index
+
 
     # Create a dictionary to map a complex to a list of roles as defined in the template.
     complexesToRoles = dict()
@@ -165,12 +197,14 @@ if __name__ == '__main__':
             reactionsToComplexes[reactionId].append(complexRef.split('/')[-1])
 
     # Create a worker for running the algorithm.
-    worker = ProbAnnotationWorker(genome['id'])
+    #worker = ProbAnnotationWorker(genome['id'])
+    worker = ProbAnnotationWorker(genome_id)
         
     # Run the probabilistic annotation algorithm.
     try:
         # Convert the features in the genome object to a fasta file.
-        fastaFile = worker.genomeToFasta(genome['features'])
+	fastaFile = args.proteinfile
+        #fastaFile = worker.genomeToFasta(genome['features'])
         
         # Run blast using the fasta file.
         blastResultFile = worker.runBlast(fastaFile)
