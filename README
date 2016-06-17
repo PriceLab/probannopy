@@ -1,7 +1,7 @@
 Terry Farrah June 2016
-This directory contains my work in making a standalone ProbAnno.
-It contains code gleaned from ProbModelSEED-master according to Mike Mundy's
-instructions.
-It was developed on hypatia on 05/16/16, then moved to AWS instance on 06/14/16.
-To run:
+Probabilistic annotation for metabolic modeling.
+Code is derived from git repository ProbModelSEED.
+Dependencies on servers have been removed.
+
+Example invocation:
 scripts/ms-probanno.py genomes/1415167.3.PATRIC.faa templates/1415167.3.PATRIC.faa output
