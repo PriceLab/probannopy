@@ -9,6 +9,7 @@ import math
 import re
 import tempfile
 import logging
+import datetime
 from ProbAnnotationParser import ProbAnnotationParser
 #from biokbase import log
 from urllib2 import HTTPError
@@ -75,6 +76,8 @@ class ProbAnnotationWorker:
         # Create a logger.
 #        self.logger = log.log(serviceName, ip_address=True, authuser=True, module=True, method=True,
         self.logger = logging.getLogger(serviceName)
+
+	logging.basicConfig(filename='logs/ms-probanno-%s.log' %(datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")),level=logging.DEBUG)
 
 #        self.logger.set_log_level(int(self.config['mlog_log_level']))
         self.logger.setLevel(int(self.config['mlog_log_level']))
