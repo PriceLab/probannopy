@@ -9,6 +9,7 @@ import traceback
 import time
 #from shock import Client as ShockClient
 #from biokbase import log
+import logging
 
 # E values of less than 1E-200 are treated as 1E-200 to avoid log of 0 issues.
 MIN_EVALUE = 1E-200
@@ -608,7 +609,7 @@ class ProbAnnotationParser:
             nodelist = shockClient.query_node( { 'lookupname': 'ProbAnnoData/'+name } )
             if len(nodelist) == 0:
                 message = 'Database file %s is not available from %s\n' %(name, self.shockURL)
-                mylog.log_message(log.ERR, message) # MBM
+                mylog.log(logging.ERROR, message) # MBM
                 raise MissingFileError(message)
             node = nodelist[0]
             
@@ -624,7 +625,7 @@ class ProbAnnotationParser:
             if download:
                 shockClient.download_to_path(node['id'], localPath)
                 fileCache[key] = node
-                mylog.log_message(log.INFO, 'Downloaded %s to %s' %(key, localPath))
+                mylog.log(logging.INFO, 'Downloaded %s to %s' %(key, localPath))
                 
         # Save the updated cache file.
         json.dump(fileCache, open(cacheFilename, 'w'), indent=4)
@@ -710,10 +711,10 @@ class ProbAnnotationParser:
             try:
                 self.loadDatabaseFiles(mylog)
                 status = 'ready'
-                mylog.log_message(log.INFO, 'All static database files loaded from Shock to %s' %(self.dataFolderPath))
+                mylog.log(logging.INFO, 'All static database files loaded from Shock to %s' %(self.dataFolderPath))
             except:
                 traceback.print_exc(file=sys.stderr)
-                mylog.log_message(log.NOTICE, 'Failed to load static database files from Shock. Checking current files...')
+                mylog.log(logging.WARNING, 'Failed to load static database files from Shock. Checking current files...')
                 self.loadDataOption = 'preload'
 
         # Get the static database files from the data directory specified in the configuration.
@@ -721,7 +722,7 @@ class ProbAnnotationParser:
             try:
                 self.checkIfDatabaseFilesExist()
                 status = 'ready'
-                mylog.log_message(log.INFO, 'All static database files are available in %s' %(self.dataFolderPath))
+                mylog.log(logging.INFO, 'All static database files are available in %s' %(self.dataFolderPath))
             except:
                 # There is a problem with at least one of the static database files so switch
                 # to the test data.
@@ -729,7 +730,7 @@ class ProbAnnotationParser:
                 self.loadDataOption = 'test'
                 self.dataFolderPath = testDataPath
                 traceback.print_exc(file=sys.stderr)
-                mylog.log_message(log.NOTICE, 'Static database files are missing. Switched to test database files in %s' %(testDataPath))
+                mylog.log(logging.WARNING, 'Static database files are missing. Switched to test database files in %s' %(testDataPath))
 
         # Update the status file to indicate that the static database files updating is done.
         self.writeStatusFile(status)
