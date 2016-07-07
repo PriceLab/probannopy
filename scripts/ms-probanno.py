@@ -109,6 +109,20 @@ def putObject(wsClient, reference, type, data):
     sys.stderr.write('Failed to create object using reference %s because of network problems\n' %(reference))
     exit(1)
 
+def writeRxnprobs(rxnProbs):
+    ''' Write a tab-delimited file of reaction probabilities
+        reactionProbs is a list of
+	rxn (string), maxProb, TYPE (string), complexString, GPR (string)
+    '''
+    while rxnProbs:
+        item = rxnProbs.pop(0)
+        s = str(item.pop(0))
+	for i in range (1, 5):
+	    element = str(item.pop(0))
+	    s = "\t".join([s,element])
+	print s
+
+
 if __name__ == '__main__':
     # Parse options.
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, prog='ms-probanno', epilog=desc3)
@@ -237,6 +251,8 @@ if __name__ == '__main__':
     # Create the rxnprobs object in the workspace.
     data = dict()
     data['reaction_probabilities'] = reactionProbs
-    putObject(wsClient, args.rxnprobsref, 'rxnprobs', data)
+#    putObject(wsClient, args.rxnprobsref, 'rxnprobs', data)
+    # reactionProbs is a list of rxn (string), maxProb, TYPE (string), complexString, GPR (string)
+    writeRxnprobs(reactionProbs)  # arg is a list
 
     exit(0)
