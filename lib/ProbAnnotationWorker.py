@@ -264,7 +264,7 @@ class ProbAnnotationWorker:
                     rolestringTuples[query] = [ (stri, p) ]
     
         # Save the generated data when debug is turned on.
-        if self.logger.get_log_level() >= logging.DEBUG2:
+        if self.logger.getEffectiveLevel() >= logging.INFO:
             rolesetProbabilityFile = os.path.join(self.workFolder, '%s.rolesetprobs' %(self.genomeId))
             with open(rolesetProbabilityFile, 'w') as handle:
                 for query in rolestringTuples:
@@ -316,7 +316,7 @@ class ProbAnnotationWorker:
                 roleProbs.append( (query, role, queryRolesToProbs[role]) )
 
         # Save the generated data when debug is turned on.
-        if self.logger.get_log_level() >= logging.DEBUG2:
+        if self.logger.getEffectiveLevel() >= logging.INFO:
             role_probability_file = os.path.join(self.workFolder, '%s.roleprobs' %(self.genomeId))
             with open(role_probability_file, "w") as handle:
                 for tuple in roleProbs:
@@ -384,7 +384,7 @@ class ProbAnnotationWorker:
             totalRoleProbs.append( (role, roleToTotalProb[role], gpr ) )
 
         # Save the generated data when debug is turned on.
-        if self.logger.get_log_level() >= logging.DEBUG2:
+        if self.logger.getEffectiveLevel() >= logging.INFO:
             total_role_probability_file = os.path.join(self.workFolder, '%s.cellroleprob' %(self.genomeId))
             with open(total_role_probability_file, "w") as handle:
                 for tuple in totalRoleProbs:
@@ -506,7 +506,7 @@ class ProbAnnotationWorker:
             complexProbs.append( (cplx, minp, TYPE, self.config["separator"].join(unavailRoles), self.config["separator"].join(noexistRoles), GPR) )
 
         # Save the generated data when debug is turned on.
-        if self.logger.get_log_level() >= logging.DEBUG2:
+        if self.logger.getEffectiveLevel() >= logging.INFO:
             complex_probability_file = os.path.join(self.workFolder, "%s.complexprob" %(self.genomeId))
             with open(complex_probability_file, "w") as handle:
                 for tuple in complexProbs:
@@ -590,7 +590,7 @@ class ProbAnnotationWorker:
             reactionProbs.append( [rxn, maxProb, TYPE, complexString, GPR] )
 
         # Save the generated data when debug is turned on.
-        if self.logger.get_log_level() >= logging.DEBUG2:
+        if self.logger.getEffectiveLevel() >= logging.INFO:
             reaction_probability_file = os.path.join(self.workFolder, "%s.rxnprobs" %(self.genomeId))
             with open(reaction_probability_file, "w") as handle:
                 for tuple in reactionProbs:
@@ -618,5 +618,5 @@ class ProbAnnotationWorker:
 
         # Log the message.
         #self.logger.log_message(level, message, self.ctx['client_ip'], self.ctx['user_id'], self.ctx['module'], self.ctx['method'], self.ctx['call_id'])
-        self.logger.log(level, message, self.ctx['client_ip'], self.ctx['user_id'], self.ctx['module'], self.ctx['method'], self.ctx['call_id'])
+        self.logger.log(level, message)
         return
