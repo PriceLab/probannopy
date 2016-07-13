@@ -8,6 +8,8 @@ import os
 import time
 import traceback
 import requests
+import re
+import wget
 from ProbAnnotationWorker import ProbAnnotationWorker
 #from biop3.Workspace.WorkspaceClient import Workspace, ServerError as WorkspaceServerError, _read_inifile
 
@@ -109,18 +111,20 @@ def putObject(wsClient, reference, type, data):
     sys.stderr.write('Failed to create object using reference %s because of network problems\n' %(reference))
     exit(1)
 
-def writeRxnprobs(rxnProbs):
+def writeRxnprobs(rxnProbs, file):
     ''' Write a tab-delimited file of reaction probabilities
         reactionProbs is a list of
 	rxn (string), maxProb, TYPE (string), complexString, GPR (string)
     '''
+    f = open(file, 'w')
     while rxnProbs:
         item = rxnProbs.pop(0)
         s = str(item.pop(0))
 	for i in range (1, 5):
 	    element = str(item.pop(0))
 	    s = "\t".join([s,element])
-	print s
+        s = s + "\n"
+	f.write(s)
 
 
 if __name__ == '__main__':
@@ -128,9 +132,9 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter, prog='ms-probanno', epilog=desc3)
 
     # Instead of using a genome object, just use a fasta file
-    # of protein sequences.
+    # of protein sequences. Can provide file or Uniprot identifier
     #parser.add_argument('genomeref', help='reference to genome object', action='store', default=None)
-    parser.add_argument('proteinfile', help='fasta file of protein sequences, downloaded from PATRIC', action='store', default=None)
+    parser.add_argument('proteome', help='fasta file of protein sequences OR uniprot identifier for proteome (e.g. UP000001570)', action='store', default=None)
 
     # Instead of using a template model object, use a template file
     # created using Build_Model_Template.py
@@ -151,9 +155,8 @@ if __name__ == '__main__':
     parser.description = desc1 + '      ' + usage + desc2
     parser.usage = argparse.SUPPRESS
     args = parser.parse_args()
-    # TODO: parse genome_id from proteinfile
-    #  It is only used for messages and tmp filenames, so can be arbitrary
-    genome_id = "foo"
+    #  genome_id is only used for messages and tmp filenames, so can be arbitrary
+    genome_id = 'proteome'
     
     
 #### BEGIN code needed only when getting objects from workspace
@@ -217,11 +220,22 @@ if __name__ == '__main__':
     # Run the probabilistic annotation algorithm.
     try:
         # Convert the features in the genome object to a fasta file.
-	fastaFile = args.proteinfile
+        p = re.compile('^UP0000\d\d\d\d\d$')
+        if p.match(args.proteome):  # fetch file from Uniprot
+            url = "http://www.uniprot.org/proteomes/" + args.proteome + ".fasta"
+            fastaFile = wget.download(url)
+            os.rename(fastaFile, "genomes/" + fastaFile)
+            fastaFile = "genomes/" + fastaFile
+        else:
+            fastaFile = args.proteome
+
         #fastaFile = worker.genomeToFasta(genome['features'])
         
         # Run blast using the fasta file.
         blastResultFile = worker.runBlast(fastaFile)
+        if p.match(args.proteome):
+            os.remove(fastaFile)
+
         
         # Calculate roleset probabilities.
         rolestringTuples = worker.rolesetProbabilitiesMarble(blastResultFile)
@@ -253,6 +267,6 @@ if __name__ == '__main__':
     data['reaction_probabilities'] = reactionProbs
 #    putObject(wsClient, args.rxnprobsref, 'rxnprobs', data)
     # reactionProbs is a list of rxn (string), maxProb, TYPE (string), complexString, GPR (string)
-    writeRxnprobs(reactionProbs)  # arg is a list
+    writeRxnprobs(reactionProbs, args.rxnprobsfile)  # first arg is a list
 
     exit(0)
