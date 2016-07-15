@@ -1,4 +1,3 @@
-
 # Read and write data files
 import os
 import sys
@@ -7,8 +6,6 @@ import subprocess
 import json
 import traceback
 import time
-#from shock import Client as ShockClient
-#from biokbase import log
 import logging
 
 # E values of less than 1E-200 are treated as 1E-200 to avoid log of 0 issues.
@@ -45,7 +42,6 @@ class ProbAnnotationParser:
         self.separator = config['separator']
         self.searchProgram = config['search_program']
         self.searchProgramPath = config['search_program_path']
-        self.shockURL = config['shock_url']
         self.loadDataOption = config['load_data_option']
 
         # Create a dictionary with the valid sources and initialize to not set.
@@ -90,8 +86,8 @@ class ProbAnnotationParser:
         self.DataFiles = dict()
         self.DataFiles['otu_fid_role_file'] = os.path.join(self.dataFolderPath, 'OTU_FID_ROLE')
 #        self.DataFiles['protein_fasta_file'] = os.path.join(self.dataFolderPath, 'PROTEIN_FASTA')
-#         self.DataFiles['complex_role_file'] = os.path.join(self.dataFolderPath, 'COMPLEX_ROLE')
-#         self.DataFiles['reaction_complex_file'] = os.path.join(self.dataFolderPath, 'REACTION_COMPLEX')
+#        self.DataFiles['complex_role_file'] = os.path.join(self.dataFolderPath, 'COMPLEX_ROLE')
+#        self.DataFiles['reaction_complex_file'] = os.path.join(self.dataFolderPath, 'REACTION_COMPLEX')
 
         # Paths to files for searching for proteins.
         self.SearchFiles = dict()
