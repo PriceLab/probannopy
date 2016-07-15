@@ -1,4 +1,3 @@
-
 import subprocess
 import sys
 import os
@@ -11,7 +10,6 @@ import tempfile
 import logging
 import datetime
 from ProbAnnotationParser import ProbAnnotationParser
-#from biokbase import log
 from urllib2 import HTTPError
 from ConfigParser import ConfigParser
 
@@ -55,9 +53,9 @@ class ProbAnnotationWorker:
         self.genomeId = genomeId
 
         # Get the configuration variables.
-        serviceName = os.environ.get('KB_SERVICE_NAME', 'ProbModelSEED')
+        serviceName = os.environ.get('KB_SERVICE_NAME', 'ProbAnno-Standalone')
         cfg = ConfigParser()
-        cfg.read(os.path.join(os.environ.get('KB_TOP'), 'deployment.cfg'))
+        cfg.read(os.path.join(os.environ.get('KB_TOP'), 'deploy.cfg'))
         self.config = dict()
         for nameval in cfg.items(serviceName):
             self.config[nameval[0]] = nameval[1]
