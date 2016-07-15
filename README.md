@@ -1,4 +1,4 @@
-Terry Farrah June 2016
+Mike Mundy and Terry Farrah June 2016
 Probabilistic annotation for metabolic modeling.
 Code is derived from git repository ProbModelSEED.
 Dependencies on servers have been removed.
@@ -11,4 +11,4 @@ export KB_TOP=..
 export PYTHONPATH=$PYTHONPATH:$KB_TOP/ProbAnno-Standalone/lib
 
 Example invocation:
-scripts/ms-probanno.py genomes/1415167.3.PATRIC.faa templates/1415167.3.PATRIC.faa output
+scripts/ms-probanno-standalone.py genomes/1415167.3.PATRIC.faa templates/1415167.3.PATRIC.faa 1415167.3.probanno.out
