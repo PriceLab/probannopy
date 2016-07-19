@@ -36,26 +36,21 @@ Please cite all three references above in any work that makes use of this softwa
 INSTALLATION and USE
 -------------------
 
-(commands below given are for bash shell)
+- Install usearch to a place in $PATH
+  (http://www.drive5.com/usearch/manual/install.html)
 
-- Install usearch to a place in $PATH (http://www.drive5.com/usearch/manual/install.html)
+- Create a environment variable for the directory that this README.md file is in
 
-- Define the environment variable KB_TOP to the parent of the current directory
-
-  export KB_TOP=..
-
-- Add $KB_TOP/ProbAnno-Standalone/lib to $PYTHONPATH
-
-  export PYTHONPATH=$PYTHONPATH:$KB_TOP/ProbAnno-Standalone/lib
+  export PADIR=$(pwd)
 
 - Select a directory with at least 1.4G available space, download two data
   files to that location, then symlink back to ProbAnno-Standalone directory.
 
   DATADIR=/foo/bar/baz
   cd $DATADIR
-  wget https://www.dropbox.com/s/lucq1p7zd9mmf1j/OTU_FID_ROLE?dl=0 -O OTU_FID_ROLE
-  wget https://www.dropbox.com/s/bssrfllefzvhzvu/PROTEIN.udb?dl=0 -O PROTEIN.udb
-  cd KB_TOP/ProbAnno-Standalone/data
+  wget -O OTU_FID_ROLE https://www.dropbox.com/s/lucq1p7zd9mmf1j/OTU_FID_ROLE?dl=0
+  wget -O PROTEIN.udb https://www.dropbox.com/s/bssrfllefzvhzvu/PROTEIN.udb?dl=0
+  cd $PADIR/data
   ln -s $DATADIR/OTU_FID_ROLE .
   ln -s $DATADIR/PROTEIN.udb .
 
