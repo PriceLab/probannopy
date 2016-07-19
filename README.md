@@ -34,7 +34,7 @@ Please cite all three references above in any work that makes use of this softwa
 
 
 INSTALLATION and USE
--------------------
+--------------------
 
 - Install usearch to a place in $PATH
   (http://www.drive5.com/usearch/manual/install.html)
@@ -46,7 +46,7 @@ INSTALLATION and USE
 - Select a directory with at least 1.4G available space, download two data
   files to that location, then symlink back to ProbAnno-Standalone directory.
 
-  DATADIR=/foo/bar/baz
+  DATADIR=/foo/bar/baz  # fill in appropriate path
   cd $DATADIR
   wget -O OTU_FID_ROLE https://www.dropbox.com/s/lucq1p7zd9mmf1j/OTU_FID_ROLE?dl=0
   wget -O PROTEIN.udb https://www.dropbox.com/s/bssrfllefzvhzvu/PROTEIN.udb?dl=0
@@ -56,7 +56,7 @@ INSTALLATION and USE
 
 
 Example invocation:
-cd $KB_TOP/ProbAnno-Standalone
+cd $PADIR
 # First arg is proteome fasta file for organism of interest,
 #   (can download from  patricbrc.org > DATA > Download tool > Protein Sequences in FASTA)
 #   OR Uniprot ID for proteome.
