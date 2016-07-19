@@ -1,12 +1,17 @@
-Mike Mundy and Terry Farrah June 2016
+Mike Mundy, Matt Benedict, and Terry Farrah June 2016
 Probabilistic annotation for metabolic modeling.
 Code is derived from git repository ProbModelSEED.
 Dependencies on servers have been removed.
 
+Originally described in Benedict, et al., Likelihood-Based Gene Annotations for
+Gap Filling and Quality Assessment in Genome-Scale Metabolic Models, PLos
+Comput Biol October 16, 2014, PMID: 25329157 
+Please cite this reference in any work that makes use of this software.
+
 Preparation:
 - Install usearch to a place in $PATH (http://www.drive5.com/usearch/manual/install.html)
 - Define the environment variable KB_TOP to the parent of the current directory
-export KB_TOP=..
+export KB_TOP=..  # bash shell
 - Add $KB_TOP/ProbAnno-Standalone/lib to $PYTHONPATH
 export PYTHONPATH=$PYTHONPATH:$KB_TOP/ProbAnno-Standalone/lib
 
