@@ -8,6 +8,12 @@ import traceback
 import requests
 import re
 import wget
+# BASE_PATH is the absolute path of .. relative to this script location
+BASE_PATH = reduce (lambda l,r: l + os.path.sep + r,
+        os.path.dirname( os.path.realpath( __file__ ) ).split( os.path.sep )[:-1] )
+sys.path.append( os.path.join( BASE_PATH, "lib" ) )
+
+
 from ProbAnnotationWorker import ProbAnnotationWorker
 
 desc1 = '''
