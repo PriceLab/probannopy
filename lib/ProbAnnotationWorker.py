@@ -54,8 +54,9 @@ class ProbAnnotationWorker:
 
         # Get the configuration variables.
         serviceName = os.environ.get('KB_SERVICE_NAME', 'ProbAnno-Standalone')
+        topDir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
         cfg = ConfigParser()
-        cfg.read(os.path.join(os.environ.get('KB_TOP'), 'deploy.cfg'))
+        cfg.read(os.path.join(topDir, 'deploy.cfg'))
         self.config = dict()
         for nameval in cfg.items(serviceName):
             self.config[nameval[0]] = nameval[1]
