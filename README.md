@@ -57,4 +57,9 @@ INSTALLATION and USE
 
 Example invocation:
 cd $KB_TOP/ProbAnno-Standalone
-scripts/ms-probanno-standalone.py genomes/1415167.3.PATRIC.faa templates/1415167.3.PATRIC.faa 1415167.3.probanno.out
+# First arg is proteome fasta file for organism of interest,
+#   (can download from  patricbrc.org > DATA > Download tool > Protein Sequences in FASTA)
+#   OR Uniprot ID for proteome.
+# Second arg is appropriate template file of several available
+# Third arg is output filename
+scripts/ms-probanno-standalone.py genomes/1415167.3.PATRIC.faa templates/GramNegative.json 1415167.3.probanno.out
