@@ -3,12 +3,40 @@ Probabilistic annotation for metabolic modeling.
 Code is derived from git repository ProbModelSEED.
 Dependencies on servers have been removed.
 
-Originally described in Benedict, et al., Likelihood-Based Gene Annotations for
-Gap Filling and Quality Assessment in Genome-Scale Metabolic Models, PLos
-Comput Biol October 16, 2014, PMID: 25329157 
-Please cite this reference in any work that makes use of this software.
+SOFTWARE AND DATA ATTRIBUTION
+-----------------------------
 
-Preparation (commands given are for bash shell):
+The source for the two data files is the KBase Central Data Model and KEGG.
+Details on the KBase data policy and sources are listed on
+http://kbase.us/data-policy-and-sources/. In particular, ProbAnno-Standalone users
+must abide by the following KBase Data Sharing Policy:
+
+KBase conforms to the Information and Data Sharing Policy of the Genomic
+Science Program of the Office of Biological and Environmental Research within
+the Office of Science. This requires that all publishable data, metadata, and
+software resulting from research funded by the Genomic Science program must
+conform to community-recognized standard formats when they exist; be clearly
+attributable; and be deposited within a community-recognized public database(s)
+appropriate for the research.
+
+The KEGG data were obtained using the KEGG REST API. KEGG is described here:
+Kanehisa, et al., KEGG as a reference resource for gene and protein annotation.
+Nucleic Acids Res. 44 (2016). PMID 26476454
+Kanehisa and Goto, KEGG: Kyoto Encyclopedia of Genes and Genomes. Nucleic Acids
+Res. 28, 27-30 (2000). PMID: 10592173 
+
+Computational method originally described in:
+Benedict, et al., Likelihood-Based Gene Annotations for Gap Filling and Quality
+Assessment in Genome-Scale Metabolic Models. PLos Comput Biol October 16, 2014,
+PMID: 25329157 
+
+Please cite all three references above in any work that makes use of this software.
+
+
+INSTALLATION and USE
+-------------------
+
+(commands below given are for bash shell)
 
 - Install usearch to a place in $PATH (http://www.drive5.com/usearch/manual/install.html)
 
@@ -33,4 +61,5 @@ Preparation (commands given are for bash shell):
 
 
 Example invocation:
+cd $KB_TOP/ProbAnno-Standalone
 scripts/ms-probanno-standalone.py genomes/1415167.3.PATRIC.faa templates/1415167.3.PATRIC.faa 1415167.3.probanno.out
