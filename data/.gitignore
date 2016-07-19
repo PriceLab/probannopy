@@ -1,2 +1,5 @@
 # Ignore the staticdata.status file created with each run of the code
 staticdata.status
+# Ignore symlinks to data files
+OTU_FID_ROLE
+PROTEIN.udb
