@@ -20,13 +20,13 @@ attributable; and be deposited within a community-recognized public database(s)
 appropriate for the research.
 
 The KEGG data were obtained using the KEGG REST API. KEGG is described here:
-Kanehisa, et al., KEGG as a reference resource for gene and protein annotation.
+* Kanehisa, et al., KEGG as a reference resource for gene and protein annotation.
 Nucleic Acids Res. 44 (2016). PMID 26476454
-Kanehisa and Goto, KEGG: Kyoto Encyclopedia of Genes and Genomes. Nucleic Acids
+* Kanehisa and Goto, KEGG: Kyoto Encyclopedia of Genes and Genomes. Nucleic Acids
 Res. 28, 27-30 (2000). PMID: 10592173 
 
 Computational method originally described in:
-Benedict, et al., Likelihood-Based Gene Annotations for Gap Filling and Quality
+* Benedict, et al., Likelihood-Based Gene Annotations for Gap Filling and Quality
 Assessment in Genome-Scale Metabolic Models. PLos Comput Biol October 16, 2014,
 PMID: 25329157 
 
@@ -36,16 +36,17 @@ Please cite all three references above in any work that makes use of this softwa
 INSTALLATION and USE
 --------------------
 
-- Install usearch to a place in $PATH
+1. Install usearch to a place in $PATH
   (http://www.drive5.com/usearch/manual/install.html)
 
-- Create a environment variable for the directory that this README.md file is in
+2. Create a environment variable for the directory that this README.md file is in
 
   export PADIR=$(pwd)
 
-- Select a directory with at least 1.4G available space, download two data
+3. Select a directory with at least 1.4G available space, download two data
   files to that location, then symlink back to ProbAnno-Standalone directory.
 
+```bash
   DATADIR=/foo/bar/baz  # fill in appropriate path
   cd $DATADIR
   wget -O OTU_FID_ROLE https://www.dropbox.com/s/lucq1p7zd9mmf1j/OTU_FID_ROLE?dl=0
@@ -53,13 +54,15 @@ INSTALLATION and USE
   cd $PADIR/data
   ln -s $DATADIR/OTU_FID_ROLE .
   ln -s $DATADIR/PROTEIN.udb .
+```
 
 
 Example invocation:
+1.  First arg is proteome fasta file for organism of interest, (can download from  patricbrc.org > DATA > Download tool > Protein Sequences in FASTA) OR Uniprot ID for proteome.
+2.  Second arg is appropriate template file of several available
+3.  Third arg is output filename
+
+```bash
 cd $PADIR
-# First arg is proteome fasta file for organism of interest,
-#   (can download from  patricbrc.org > DATA > Download tool > Protein Sequences in FASTA)
-#   OR Uniprot ID for proteome.
-# Second arg is appropriate template file of several available
-# Third arg is output filename
 scripts/ms-probanno-standalone.py genomes/1415167.3.PATRIC.faa templates/GramNegative.json 1415167.3.probanno.out
+```
