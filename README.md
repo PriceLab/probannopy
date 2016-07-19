@@ -58,9 +58,9 @@ INSTALLATION and USE
 
 
 Example invocation:
-1.  First arg is proteome fasta file for organism of interest, (can download from  patricbrc.org > DATA > Download tool > Protein Sequences in FASTA) OR Uniprot ID for proteome.
-2.  Second arg is appropriate template file of several available
-3.  Third arg is output filename
+1. First arg is proteome fasta file for organism of interest, (can download from  patricbrc.org > DATA > Download tool > Protein Sequences in FASTA) OR Uniprot ID for proteome.
+2. Second arg is appropriate template file of several available
+3. Third arg is output filename
 
 ```bash
 cd $PADIR
