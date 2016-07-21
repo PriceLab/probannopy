@@ -38,7 +38,11 @@ class ProbAnnotationParser:
         '''
 
         # Save the configuration variables related to data files.
-        self.dataFolderPath = config['data_dir']
+        topDir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+        if 'data_dir' in config.keys():
+            self.dataFolderPath = config['data_dir']
+        else:
+            self.dataFolderPath = os.path.join(topDir, 'data')
         self.separator = config['separator']
         self.searchProgram = config['search_program']
         self.searchProgramPath = config['search_program_path']
@@ -99,8 +103,8 @@ class ProbAnnotationParser:
             self.SearchFiles['protein_otu_header_file'] = os.path.join(self.dataFolderPath, 'PROTEIN_FASTA.phr')
 
         # Create the data folder if it does not exist.
-        if not os.path.exists(config['data_dir']):
-            os.makedirs(config['data_dir'], 0775)
+        if not os.path.exists(self.dataFolderPath):
+            os.makedirs(self.dataFolderPath, 0775)
 
         return
 
@@ -576,7 +580,7 @@ class ProbAnnotationParser:
     def loadDatabaseFiles(self, mylog):
         ''' Load the static database files from Shock.
 
-            The static database files are stored in the directory specified by the
+            The static database files are stored in the data subdirectory
             data_dir configuration variable.  A file is only downloaded if
             the file is not available on this system or the file has been updated
             in Shock.

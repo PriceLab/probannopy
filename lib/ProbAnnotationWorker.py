@@ -60,6 +60,8 @@ class ProbAnnotationWorker:
         self.config = dict()
         for nameval in cfg.items(serviceName):
             self.config[nameval[0]] = nameval[1]
+	if 'work_dir' not in self.config.keys():
+            self.config['work_dir'] = os.path.join(topDir, 'data')
         
         # Use the context from the server or build a context when used outside of a server.
         if context is not None:
