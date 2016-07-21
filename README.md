@@ -43,17 +43,19 @@ INSTALLATION and USE
 
   export PADIR=$(pwd)
 
-3. Select a directory with at least 1.4G available space, download two data
-  files to that location, then symlink back to ProbAnno-Standalone directory.
+3. Select a directory with at least 1.4G available space, and download two data
+  files to that location. Use $PADIR/data if enough space there.
 
 ```bash
   DATADIR=/foo/bar/baz  # fill in appropriate path
   cd $DATADIR
   wget -O OTU_FID_ROLE https://www.dropbox.com/s/lucq1p7zd9mmf1j/OTU_FID_ROLE?dl=0
   wget -O PROTEIN.udb https://www.dropbox.com/s/bssrfllefzvhzvu/PROTEIN.udb?dl=0
-  cd $PADIR/data
-  ln -s $DATADIR/OTU_FID_ROLE .
-  ln -s $DATADIR/PROTEIN.udb .
+```
+4. Edit the config file to include $DATADIR and usearch path:
+
+```bash
+  vim $DATADIR/deploy.cfg
 ```
 
 
