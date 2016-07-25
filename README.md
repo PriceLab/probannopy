@@ -36,27 +36,33 @@ Please cite all three references above in any work that makes use of this softwa
 INSTALLATION and USE
 --------------------
 
-1. Install usearch to a place in $PATH
+* Check that python and the required modules are installed.
+  Required modules are  argparse, json, sys, os, time, traceback, request, re,
+  wget, logging, subprocess, shutil, math, tempfile, datetime, urllib2,
+  ConfigParser
+
+* Install usearch
   (http://www.drive5.com/usearch/manual/install.html)
 
-2. Create a environment variable for the directory that this README.md file is in
+* Create a environment variable for the directory that this README.md file is in
 
-  export PADIR=$(pwd)
+  export PADIR=$(pwd)   # bash shell; modify if using csh/ksh etc.
 
-3. Select a directory with at least 1.4G available space, and download two data
-  files to that location. Use $PADIR/data if enough space there.
+* Select a directory with at least 1.4G available space (use $PADIR/data if
+  enough space there) and download two data files to that location.
 
 ```bash
-  DATADIR=/foo/bar/baz  # fill in appropriate path
+  DATADIR=/foo/bar/baz  # fill in appropriate path. Again, this is for bash shell.
   cd $DATADIR
   wget -O OTU_FID_ROLE https://www.dropbox.com/s/lucq1p7zd9mmf1j/OTU_FID_ROLE?dl=0
   wget -O PROTEIN.udb https://www.dropbox.com/s/bssrfllefzvhzvu/PROTEIN.udb?dl=0
 ```
-4. Edit the config file to include $DATADIR and usearch path:
+* Edit the config file to include $DATADIR and usearch path:
 
 ```bash
   vim $DATADIR/deploy.cfg
 ```
+
 
 
 Example invocation:
@@ -67,5 +73,5 @@ Third arg is output filename.
 
 ```bash
 cd $PADIR
-scripts/ms-probanno-standalone.py genomes/1415167.3.PATRIC.faa templates/GramNegative.json 1415167.3.probanno.out
+scripts/ms-probanno-standalone.py genomes/1415167.3.PATRIC.faa templates/GramNegative.json 1415167.3.probanno.out # silent; takes a few minutes.
 ```
