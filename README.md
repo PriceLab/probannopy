@@ -37,7 +37,7 @@ INSTALLATION and USE
 --------------------
 
 * Check that python and the required modules are installed.
-  Required modules are  argparse, json, sys, os, time, traceback, request, re,
+  Required modules are  argparse, json, sys, os, time, traceback, requests, re,
   wget, logging, subprocess, shutil, math, tempfile, datetime, urllib2,
   ConfigParser
 
