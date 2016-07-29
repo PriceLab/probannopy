@@ -60,7 +60,7 @@ INSTALLATION and USE
 * Edit the config file to include $DATADIR and usearch path:
 
 ```bash
-  vim $DATADIR/deploy.cfg
+  vim $PADIR/deploy.cfg
 ```
 
 
