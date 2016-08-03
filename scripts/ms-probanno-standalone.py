@@ -1,17 +1,20 @@
 #! /usr/bin/env python
-import argparse
-import json
+# BASE_PATH is the absolute path of .. relative to this script location
 import sys
 import os
+BASE_PATH = reduce (lambda l,r: l + os.path.sep + r,
+        os.path.dirname( os.path.realpath( __file__ ) ).split( os.path.sep )[:-1] )
+sys.path.append( os.path.join( BASE_PATH, "lib" ) )
+sys.path.append( os.path.join( BASE_PATH, "lib/python2.6/site-packages" ) )
+sys.path.append( os.path.join( BASE_PATH, "../lib/python2.6/site-packages" ) )
+import argparse
+import json
 import time
 import traceback
 import requests
 import re
-import wget
-# BASE_PATH is the absolute path of .. relative to this script location
-BASE_PATH = reduce (lambda l,r: l + os.path.sep + r,
-        os.path.dirname( os.path.realpath( __file__ ) ).split( os.path.sep )[:-1] )
-sys.path.append( os.path.join( BASE_PATH, "lib" ) )
+import urllib2
+import random
 
 
 from ProbAnnotationWorker import ProbAnnotationWorker
@@ -75,15 +78,29 @@ if __name__ == '__main__':
     parser.description = desc1 + '      ' + usage + desc2
     parser.usage = argparse.SUPPRESS
     args = parser.parse_args()
+    random.seed()
+    fastaFile = args.proteome
+    genome_id = os.path.splitext(os.path.basename(fastaFile))[0]
+
+    # Create a worker for running the algorithm.
+    worker = ProbAnnotationWorker(genome_id)
+        
     p = re.compile('^UP0000\d\d\d\d\d$')
     if p.match(args.proteome):  # fetch file from Uniprot
         url = "http://www.uniprot.org/proteomes/" + args.proteome + ".fasta"
-        fastaFile = wget.download(url)
-        os.rename(fastaFile, "genomes/" + fastaFile)
-        fastaFile = "genomes/" + fastaFile
-    else:
-        fastaFile = args.proteome
-    genome_id = os.path.splitext(os.path.basename(fastaFile))[0]
+        fastaFile = worker.workFolder + "/" + args.proteome + str(random.randint(100000, 999999)) + ".fasta"
+	attempts = 0
+	while attempts < 3:
+	    try:
+		response = urllib2.urlopen(url, timeout = 5)
+		content = response.read()
+		f = open( fastaFile, 'w' )
+		f.write( content )
+		f.close()
+		break
+	    except urllib2.URLError as e:
+		attempts += 1
+		print type(e)
 
     # Create a dictionary from the json template file
     json_data=open(args.templatefile).read()
@@ -114,9 +131,6 @@ if __name__ == '__main__':
             # Complex ID is last element in reference.
             reactionsToComplexes[reactionId].append(complexRef.split('/')[-1])
 
-    # Create a worker for running the algorithm.
-    worker = ProbAnnotationWorker(genome_id)
-        
     # Run the probabilistic annotation algorithm.
     try:
 
