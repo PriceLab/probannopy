@@ -62,6 +62,8 @@ class ProbAnnotationWorker:
             self.config[nameval[0]] = nameval[1]
 	if 'work_dir' not in self.config.keys():
             self.config['work_dir'] = os.path.join(topDir, 'data')
+	if 'log_dir' not in self.config.keys():
+            self.config['log_dir'] = os.path.join(topDir, 'logs')
         
         # Use the context from the server or build a context when used outside of a server.
         if context is not None:
@@ -75,10 +77,12 @@ class ProbAnnotationWorker:
             self.ctx['call_id'] = '-'
 
         # Create a logger.
+        if not os.path.exists(self.config['log_dir']):
+            os.makedirs(self.config['log_dir'], 0775)
 #        self.logger = log.log(serviceName, ip_address=True, authuser=True, module=True, method=True,
         self.logger = logging.getLogger(serviceName)
 
-	logging.basicConfig(filename='logs/ms-probanno-%s.log' %(datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")),level=logging.DEBUG)
+	logging.basicConfig(filename=self.config['log_dir'] + '/ms-probanno-%s.log' %(datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S.%f")),level=logging.DEBUG)
 
 #        self.logger.set_log_level(int(self.config['mlog_log_level']))
         self.logger.setLevel(int(self.config['mlog_log_level']))
