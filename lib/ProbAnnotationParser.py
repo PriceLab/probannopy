@@ -83,8 +83,8 @@ class ProbAnnotationParser:
 
         # Paths to files for tracking status of static database files.
         self.StatusFiles = dict()
-        self.StatusFiles['status_file'] = os.path.join(self.dataFolderPath, 'staticdata.status')
-        self.StatusFiles['cache_file'] = os.path.join(self.dataFolderPath, 'staticdata.cache')
+        #self.StatusFiles['status_file'] = os.path.join(self.dataFolderPath, 'staticdata.status')
+        #self.StatusFiles['cache_file'] = os.path.join(self.dataFolderPath, 'staticdata.cache')
 
         # Paths to files with source data.
         self.DataFiles = dict()
@@ -703,7 +703,7 @@ class ProbAnnotationParser:
         '''
 
         # Update the status file to indicate that the static database files are being updated.
-        self.writeStatusFile('running')
+        #self.writeStatusFile('running')
         status = 'failed'
 
         # Get the static database files from Shock (only missing or changed files are downloaded).
@@ -733,5 +733,5 @@ class ProbAnnotationParser:
                 mylog.log(logging.WARNING, 'Static database files are missing. Switched to test database files in %s' %(testDataPath))
 
         # Update the status file to indicate that the static database files updating is done.
-        self.writeStatusFile(status)
+        #self.writeStatusFile(status)
         return self.loadDataOption
