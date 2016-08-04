@@ -107,6 +107,12 @@ if __name__ == '__main__':
         fastaFile = wget.download(url)
         os.rename(fastaFile, "genomes/" + fastaFile)
         fastaFile = "genomes/" + fastaFile
+    elif args.proteome.startswith("PATRIC:"):
+        genome_id = args.proteome[7:]
+        url = "ftp://ftp.patricbrc.org/patric2/patric3/genomes/" + genome_id + "/" + genome_id + ".PATRIC.faa"
+        fastaFile = wget.download(url)
+        os.rename(fastaFile, "genomes/" + fastaFile)
+        fastaFile = "genomes/" + fastaFile
 
     # Create a dictionary from the json template file
     json_data = open(args.templatefile).read()
