@@ -13,6 +13,7 @@ import traceback
 import re
 import urllib2
 import random
+import datetime
 import wget
 
 from ProbAnnotationWorker import ProbAnnotationWorker
@@ -44,12 +45,14 @@ AUTHORS
 '''
 
 
-def writeRxnprobs(rxnProbs, filename):
+def writeRxnprobs(rxnProbs, filename, genome_id, organism):
     """ Write a tab-delimited file of reaction probabilities
         reactionProbs is a list of
         rxn (string), maxProb, TYPE (string), complexString, GPR (string)
     """
     f = open(filename, 'w')
+    f.write("# ProbAnno run " + str(datetime.datetime.now()) + "\n")
+    f.write("# " + genome_id + " " + organism + "\n")
     for index in range(len(rxnProbs)):
         prob = rxnProbs[index]
         f.write('{0}0\t{1:1.4f}\t{2}\t{3}\t{4}\n'.format(prob[0], prob[1], prob[2], prob[3], prob[4]))
@@ -113,6 +116,16 @@ if __name__ == '__main__':
         fastaFile = wget.download(url)
         os.rename(fastaFile, "genomes/" + fastaFile)
         fastaFile = "genomes/" + fastaFile
+
+   # Get organism name from fasta file
+    f = open( fastaFile, 'r' )
+    line = f.readline()
+    p = re.compile('.*OS=(.+) GN=')
+    match = p.match(line)
+    args.organism = 'unspecified organism'
+    if match:
+	    args.organism = match.group(1)
+    f.close()
 
     # Create a dictionary from the json template file
     json_data = open(args.templatefile).read()
@@ -180,6 +193,6 @@ if __name__ == '__main__':
 
     # Create output file with details on reaction likelihoods.
     # reactionProbs is a list of rxn (string), maxProb, TYPE (string), complexString, GPR (string)
-    writeRxnprobs(reactionProbs, args.rxnprobsfile)  # first arg is a list
+    writeRxnprobs(reactionProbs, args.rxnprobsfile, genome_id, args.organism)  # first arg is a list
 
     exit(0)
