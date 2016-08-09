@@ -1,16 +1,12 @@
 import subprocess
-import sys
 import os
 import shutil
-import traceback
-import time
 import math
-import re
 import tempfile
 import logging
 import datetime
+from operator import itemgetter
 from ProbAnnotationParser import ProbAnnotationParser
-from urllib2 import HTTPError
 from ConfigParser import ConfigParser
 
 # Exception thrown when no features are found in Genome object
@@ -34,7 +30,7 @@ class NoGeneIdsError(Exception):
     pass
 
 # Exception thrown when role not found in roleToTotalProb dictionary
-class RoleNotFoundEror(Exception):
+class RoleNotFoundError(Exception):
     pass
 
 ''' Worker that implements probabilistic annotation algorithm. '''
@@ -60,31 +56,17 @@ class ProbAnnotationWorker:
         self.config = dict()
         for nameval in cfg.items(serviceName):
             self.config[nameval[0]] = nameval[1]
-	if 'work_dir' not in self.config.keys():
+        if 'work_dir' not in self.config.keys():
             self.config['work_dir'] = os.path.join(topDir, 'data')
-	if 'log_dir' not in self.config.keys():
+        if 'log_dir' not in self.config.keys():
             self.config['log_dir'] = os.path.join(topDir, 'logs')
         
-        # Use the context from the server or build a context when used outside of a server.
-        if context is not None:
-            self.ctx = context
-        else:
-            self.ctx = dict()
-            self.ctx['client_ip'] = '127.0.0.1'
-            self.ctx['user_id'] = '-'
-            self.ctx['module'] = serviceName
-            self.ctx['method'] = '-'
-            self.ctx['call_id'] = '-'
-
         # Create a logger.
         if not os.path.exists(self.config['log_dir']):
             os.makedirs(self.config['log_dir'], 0775)
-#        self.logger = log.log(serviceName, ip_address=True, authuser=True, module=True, method=True,
+        logging.basicConfig(filename='logs/ms-probanno-%s.log' %(datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")),
+                            format='%(asctime)-15s %(levelname)-8s %(message)s')
         self.logger = logging.getLogger(serviceName)
-
-	logging.basicConfig(filename=self.config['log_dir'] + '/ms-probanno-%s.log' %(datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S.%f")),level=logging.DEBUG)
-
-#        self.logger.set_log_level(int(self.config['mlog_log_level']))
         self.logger.setLevel(int(self.config['mlog_log_level']))
 
         # Create a ProbAnnotationParser object for working with the static database files.
@@ -115,7 +97,7 @@ class ProbAnnotationWorker:
             raise NoFeaturesError('Genome %s has no features. Did you forget to run annotate_genome?\n' %(self.genomeId))
     
         # Run the list of features to build the fasta file.
-        self._log(logging.DEBUG, 'Creating protein fasta file for genome '+self.genomeId)
+        self._log(logging.INFO, 'Creating protein fasta file for genome '+self.genomeId)
         fastaFile = os.path.join(self.workFolder, '%s.faa' %(self.genomeId))
         with open(fastaFile, 'w') as handle:
             numProteins = 0
@@ -126,7 +108,7 @@ class ProbAnnotationWorker:
                 handle.write('>%s\n%s\n' %(feature['id'], feature['protein_translation']))
                 numProteins += 1
         
-        self._log(logging.DEBUG, 'Wrote %d protein sequences to "%s"' %(numProteins, fastaFile))
+        self._log(logging.INFO, 'Wrote %d protein sequences to "%s"' %(numProteins, fastaFile))
         return fastaFile
         
     def runBlast(self, queryFile):
@@ -158,7 +140,7 @@ class ProbAnnotationWorker:
 
         # Run the command to search for proteins against subsystem proteins.
         cmd = ' '.join(args)
-        self._log(logging.DEBUG, 'Started protein search with command: '+cmd)
+        self._log(logging.INFO, 'Started protein search with command: '+cmd)
         try:
             proc = subprocess.Popen(args, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
             (stdout, stderr) = proc.communicate()
@@ -173,7 +155,7 @@ class ProbAnnotationWorker:
         except OSError as e:
             message = 'Failed to run "%s": %s' %(args[0], e.strerror)
             raise BlastError(message)
-        self._log(logging.DEBUG, 'Finished protein search')
+        self._log(logging.INFO, 'Finished protein search')
 
         return blastResultFile
     
@@ -194,7 +176,7 @@ class ProbAnnotationWorker:
             @raise NoTargetIdError when target ID in search results is not found in rolestrings
         '''
 
-        self._log(logging.DEBUG, 'Started marble-picking on rolesets for genome '+self.genomeId)
+        self._log(logging.INFO, 'Started marble-picking on rolesets for genome '+self.genomeId)
     
         # Read in the target roles (this function returns the roles as lists!)
         targetIdToRole, targetRoleToId = self.dataParser.readFidRoleFile(self.dataParser.DataFiles['otu_fid_role_file'])
@@ -269,14 +251,14 @@ class ProbAnnotationWorker:
                     rolestringTuples[query] = [ (stri, p) ]
     
         # Save the generated data when debug is turned on.
-        if self.logger.getEffectiveLevel() >= logging.INFO:
+        if self.logger.getEffectiveLevel() == logging.DEBUG:
             rolesetProbabilityFile = os.path.join(self.workFolder, '%s.rolesetprobs' %(self.genomeId))
             with open(rolesetProbabilityFile, 'w') as handle:
                 for query in rolestringTuples:
                     for tup in rolestringTuples[query]:
                         handle.write('%s\t%s\t%1.4f\n' %(query, tup[0], tup[1]))
             
-        self._log(logging.DEBUG, 'Finished marble-picking on %d rolesets for genome %s' %(len(rolestringTuples), self.genomeId))
+        self._log(logging.INFO, 'Finished marble-picking on %d rolesets for genome %s' %(len(rolestringTuples), self.genomeId))
         return rolestringTuples
             
     def rolesetProbabilitiesToRoleProbabilities(self, queryToTuplist):
@@ -296,7 +278,7 @@ class ProbAnnotationWorker:
             @return List of tuples with query gene, role, and likelihood
         '''
 
-        self._log(logging.DEBUG, 'Started computing role probabilities for genome '+self.genomeId)
+        self._log(logging.INFO, 'Started computing role probabilities for genome '+self.genomeId)
 
         # Start with an empty list.
         roleProbs = list()
@@ -321,13 +303,13 @@ class ProbAnnotationWorker:
                 roleProbs.append( (query, role, queryRolesToProbs[role]) )
 
         # Save the generated data when debug is turned on.
-        if self.logger.getEffectiveLevel() >= logging.INFO:
+        if self.logger.getEffectiveLevel() == logging.DEBUG:
             role_probability_file = os.path.join(self.workFolder, '%s.roleprobs' %(self.genomeId))
             with open(role_probability_file, "w") as handle:
                 for tuple in roleProbs:
                     handle.write('%s\t%s\t%s\n' %(tuple[0], tuple[1], tuple[2]))
 
-        self._log(logging.DEBUG, 'Finished computing %d role probabilities for genome %s' %(len(roleProbs), self.genomeId))
+        self._log(logging.INFO, 'Finished computing %d role probabilities for genome %s' %(len(roleProbs), self.genomeId))
 
         return roleProbs
 
@@ -350,7 +332,7 @@ class ProbAnnotationWorker:
             @raise RoleNotFoundError when role is not placed properly in roleToTotalProb dictionary
         '''
 
-        self._log(logging.DEBUG, 'Started generating whole-cell role probabilities for genome '+self.genomeId)
+        self._log(logging.INFO, 'Started generating whole-cell role probabilities for genome '+self.genomeId)
 
         # Find maximum likelihood among all query genes for each role.
         # This is assumed to be the likelihood of that role occurring in the organism as a whole.
@@ -371,7 +353,7 @@ class ProbAnnotationWorker:
         for tuple in roleProbs:
             if tuple[1] not in roleToTotalProb:
                 message = 'Role %s not placed properly in roleToTotalProb dictionary?' %(tuple[1])
-                self._log(logging.ERR, message)
+                self._log(logging.ERROR, message)
                 raise RoleNotFoundError(message)
             if float(tuple[2]) >= float(self.config['dilution_percent'])/100.0 * roleToTotalProb[tuple[1]]:
                 if tuple[1] in roleToGeneList:
@@ -389,13 +371,13 @@ class ProbAnnotationWorker:
             totalRoleProbs.append( (role, roleToTotalProb[role], gpr ) )
 
         # Save the generated data when debug is turned on.
-        if self.logger.getEffectiveLevel() >= logging.INFO:
+        if self.logger.getEffectiveLevel() == logging.DEBUG:
             total_role_probability_file = os.path.join(self.workFolder, '%s.cellroleprob' %(self.genomeId))
             with open(total_role_probability_file, "w") as handle:
                 for tuple in totalRoleProbs:
                     handle.write('%s\t%s\t%s\n' %(tuple[0], tuple[1], tuple[2]))
 
-        self._log(logging.DEBUG, 'Finished generating %d whole-cell role probabilities for genome %s' %(len(totalRoleProbs), self.genomeId))
+        self._log(logging.INFO, 'Finished generating %d whole-cell role probabilities for genome %s' %(len(totalRoleProbs), self.genomeId))
 
         return totalRoleProbs
 
@@ -432,7 +414,7 @@ class ProbAnnotationWorker:
                 relationship
         '''
 
-        self._log(logging.DEBUG, 'Started computing complex probabilities for '+self.genomeId)
+        self._log(logging.INFO, 'Started computing complex probabilities for '+self.genomeId)
 
         # Get the mapping from complexes to roles if it isn't already provided.
         if complexesToRequiredRoles is None:
@@ -511,13 +493,13 @@ class ProbAnnotationWorker:
             complexProbs.append( (cplx, minp, TYPE, self.config["separator"].join(unavailRoles), self.config["separator"].join(noexistRoles), GPR) )
 
         # Save the generated data when debug is turned on.
-        if self.logger.getEffectiveLevel() >= logging.INFO:
+        if self.logger.getEffectiveLevel() == logging.DEBUG:
             complex_probability_file = os.path.join(self.workFolder, "%s.complexprob" %(self.genomeId))
             with open(complex_probability_file, "w") as handle:
                 for tuple in complexProbs:
                     handle.write("%s\t%1.4f\t%s\t%s\t%s\t%s\n" %(tuple[0], tuple[1], tuple[2], tuple[3], tuple[4], tuple[5]))
 
-        self._log(logging.DEBUG, 'Finished computing complex probabilities for '+self.genomeId)
+        self._log(logging.INFO, 'Finished computing complex probabilities for '+self.genomeId)
         return complexProbs
 
     def reactionProbabilities(self, complexProbs, rxnsToComplexes = None):
@@ -541,7 +523,7 @@ class ProbAnnotationWorker:
                 and gene-protein-reaction relationship
         '''
 
-        self._log(logging.DEBUG, 'Started computing reaction probabilities for '+self.genomeId)
+        self._log(logging.INFO, 'Started computing reaction probabilities for '+self.genomeId)
 
         # Build a dictionary keyed by complex ID of tuples with likelihood, type, and GPR.
         # Note we don't need to use the list of roles not in organism and list of roles
@@ -594,14 +576,17 @@ class ProbAnnotationWorker:
             # Add everything to the final list.
             reactionProbs.append( [rxn, maxProb, TYPE, complexString, GPR] )
 
+        # Sort the reaction likelihoods by reaction ID.
+        reactionProbs.sort(key=itemgetter(0))
+
         # Save the generated data when debug is turned on.
-        if self.logger.getEffectiveLevel() >= logging.INFO:
+        if self.logger.getEffectiveLevel() == logging.DEBUG:
             reaction_probability_file = os.path.join(self.workFolder, "%s.rxnprobs" %(self.genomeId))
             with open(reaction_probability_file, "w") as handle:
                 for tuple in reactionProbs:
                     handle.write("%s\t%1.6f\t%s\t%s\t%s\n" %(tuple[0], tuple[1], tuple[2], tuple[3], tuple[4]))
 
-        self._log(logging.DEBUG, 'Finished computing reaction probabilities for '+self.genomeId)
+        self._log(logging.INFO, 'Finished computing reaction probabilities for '+self.genomeId)
         return reactionProbs
 
     def cleanup(self):
@@ -610,7 +595,8 @@ class ProbAnnotationWorker:
             @return Nothing
         '''
 
-        shutil.rmtree(self.workFolder)
+        if self.logger.getEffectiveLevel() > logging.DEBUG:
+            shutil.rmtree(self.workFolder)
         return
 
     def _log(self, level, message):
@@ -622,6 +608,5 @@ class ProbAnnotationWorker:
         '''
 
         # Log the message.
-        #self.logger.log_message(level, message, self.ctx['client_ip'], self.ctx['user_id'], self.ctx['module'], self.ctx['method'], self.ctx['call_id'])
         self.logger.log(level, message)
         return
