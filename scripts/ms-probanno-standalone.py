@@ -77,6 +77,10 @@ if __name__ == '__main__':
     # Get output filename
     parser.add_argument('rxnprobsfile', help='output filename for rxnprobs', action='store', default=None)
 
+    # Get optional genome_id
+    cl_genome_id = ''
+    parser.add_argument('--genome_id', dest='genome_id',  help='a string denoting this genome, often an organism name')
+
     usage = parser.format_usage()
     parser.description = desc1 + '      ' + usage + desc2
     parser.usage = argparse.SUPPRESS
@@ -84,6 +88,10 @@ if __name__ == '__main__':
     random.seed()
     fastaFile = args.proteome
     genome_id = os.path.splitext(os.path.basename(fastaFile))[0]
+    if args.genome_id:
+            genome_id = args.genome_id
+	    print "args.genome_id: " + args.genome_id
+    
 
     # Create a worker for running the algorithm.
     worker = ProbAnnotationWorker(genome_id)
@@ -105,14 +113,8 @@ if __name__ == '__main__':
                 attempts += 1
                 print type(e)
     elif args.proteome.startswith("PATRIC:"):
-        genome_id = args.proteome[7:]
-        url = "ftp://ftp.patricbrc.org/patric2/patric3/genomes/" + genome_id + "/" + genome_id + ".PATRIC.faa"
-        fastaFile = wget.download(url)
-        os.rename(fastaFile, "genomes/" + fastaFile)
-        fastaFile = "genomes/" + fastaFile
-    elif args.proteome.startswith("PATRIC:"):
-        genome_id = args.proteome[7:]
-        url = "ftp://ftp.patricbrc.org/patric2/patric3/genomes/" + genome_id + "/" + genome_id + ".PATRIC.faa"
+        patric_genome_id = args.proteome[7:]
+        url = "ftp://ftp.patricbrc.org/patric2/patric3/genomes/" + patric_genome_id + "/" + patric_genome_id + ".PATRIC.faa"
         fastaFile = wget.download(url)
         os.rename(fastaFile, "genomes/" + fastaFile)
         fastaFile = "genomes/" + fastaFile
