@@ -64,7 +64,7 @@ class ProbAnnotationWorker:
         # Create a logger.
         if not os.path.exists(self.config['log_dir']):
             os.makedirs(self.config['log_dir'], 0775)
-        logging.basicConfig(filename='logs/ms-probanno-%s.log' %(datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")),
+        logging.basicConfig(filename=self.config['log_dir']+'/ms-probanno-%s.log' %(datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")),
                             format='%(asctime)-15s %(levelname)-8s %(message)s')
         self.logger = logging.getLogger(serviceName)
         self.logger.setLevel(int(self.config['mlog_log_level']))
