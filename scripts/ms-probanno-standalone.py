@@ -54,8 +54,8 @@ def writeRxnprobs(rxnProbs, filename, genome_id, organism):
     f.write("# ProbAnno run " + str(datetime.datetime.now()) + "\n")
     f.write("# " + genome_id + " " + organism + "\n")
     for index in range(len(rxnProbs)):
-        prob = rxnProbs[index]
-        f.write('{0}0\t{1:1.4f}\t{2}\t{3}\t{4}\n'.format(prob[0], prob[1], prob[2], prob[3], prob[4]))
+	prob = rxnProbs[index]
+	f.write('{0}0\t{1:1.4f}\t{2}\t{3}\t{4}\n'.format(prob[0], prob[1], prob[2], prob[3], prob[4]))
     f.close()
     return
 
@@ -67,7 +67,7 @@ if __name__ == '__main__':
 
     # Get proteome -- either a fasta file or a Uniprot ID
     parser.add_argument('proteome',
-                        help='fasta file of protein sequences OR uniprot identifier for proteome (e.g. UP000001570)',
+                        help='fasta file of protein sequences OR taxonomy identifier for proteome (e.g. 224308 for Bacillus subtilis)',
                         action='store', default=None)
 
     # Get template file, previously created using Build_Model_Template.py from ModelSEEDDatabase
@@ -96,13 +96,16 @@ if __name__ == '__main__':
     # Create a worker for running the algorithm.
     worker = ProbAnnotationWorker(genome_id)
         
-    p = re.compile('^UP0000\d\d\d\d\d$')
-    if p.match(args.proteome):  # fetch file from Uniprot
-        url = "http://www.uniprot.org/proteomes/" + args.proteome + ".fasta"
-        fastaFile = worker.workFolder + "/" + args.proteome + str(random.randint(100000, 999999)) + ".fasta"
+    # taxon id is one to seven digits
+    taxid_pattern = re.compile('^\d{1,7}$')
+    if taxid_pattern.match(args.proteome):  # fetch file from Uniprot
+
+        url = "http://www.uniprot.org/uniprot/?format=fasta&query=organism:" + args.proteome
+        fastaFile = worker.workFolder + "/" + args.proteome + "_" + str(random.randint(100000, 999999)) + ".fasta#"
         attempts = 0
         while attempts < 3:
             try:
+		print "Fetching " +  url
                 response = urllib2.urlopen(url, timeout = 5)
                 content = response.read()
                 f = open( fastaFile, 'w' )
@@ -122,8 +125,8 @@ if __name__ == '__main__':
    # Get organism name from fasta file
     f = open( fastaFile, 'r' )
     line = f.readline()
-    p = re.compile('.*OS=(.+) GN=')
-    match = p.match(line)
+    org_pattern = re.compile('.*OS=(.+) GN=')
+    match = org_pattern.match(line)
     args.organism = 'unspecified organism'
     if match:
 	    args.organism = match.group(1)
@@ -148,7 +151,8 @@ if __name__ == '__main__':
                 # A complex has a list of complexroles and each complexrole has a reference
                 # to a role and each role has a name. Role ID is last element in reference.
                 roleId = template['complexes'][index]['complexroles'][crindex]['templaterole_ref'].split('/')[-1]
-                complexesToRoles[complexId].append(roleId)
+                #complexesToRoles[complexId].append(roleId)
+		complexesToRoles[complexId].append(template['roles'][roles[roleId]]['name']) 
 
     # Create a dictionary to map a reaction to a list of complexes as defined in the template.
     reactionsToComplexes = dict()
@@ -165,7 +169,7 @@ if __name__ == '__main__':
 
         # Run blast using the fasta file.
         blastResultFile = worker.runBlast(fastaFile)
-        if p.match(args.proteome):
+        if taxid_pattern.match(args.proteome):
             os.remove(fastaFile)
         
         # Calculate roleset probabilities.
