@@ -1,10 +1,16 @@
 Mike Mundy, Matt Benedict, and Terry Farrah June 2016
 Probabilistic annotation for metabolic modeling.
-Code is derived from git repository ProbModelSEED.
-Dependencies on servers have been removed.
+Code is derived from git repository ProbModelSEED
+(https://github.com/ModelSEED/ProbModelSEED), with
+dependencies on servers removed.
 
 SOFTWARE AND DATA ATTRIBUTION
 -----------------------------
+
+This product includes software developed by and/or derived from the SEED Project
+(http://www.theseed.org/) to which the U.S. Government retains certain rights.
+Please see the original software license
+(https://github.com/ModelSEED/ProbModelSEED/blob/master/LICENSE.md) for details.
 
 The source for the two data files is the KBase Central Data Model and KEGG.
 Details on the KBase data policy and sources are listed on
