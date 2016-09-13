@@ -50,9 +50,14 @@ def writeRxnprobs(rxnProbs, filename, genome_id, organism):
         reactionProbs is a list of
         rxn (string), maxProb, TYPE (string), complexString, GPR (string)
     """
-    f = open(filename, 'w')
+    try:
+	f = open(filename, 'w')
+    except:
+	sys.exit(2) #exit code 2: cannot open output file for writing
     f.write("# ProbAnno run " + str(datetime.datetime.now()) + "\n")
     f.write("# " + genome_id + " " + organism + "\n")
+    if len(rxnProbs) == 0:
+	sys.exit(3)  # exit code 3: empty results
     for index in range(len(rxnProbs)):
 	prob = rxnProbs[index]
 	f.write('{0}0\t{1:1.4f}\t{2}\t{3}\t{4}\n'.format(prob[0], prob[1], prob[2], prob[3], prob[4]))
@@ -62,6 +67,9 @@ def writeRxnprobs(rxnProbs, filename, genome_id, organism):
 
 if __name__ == '__main__':
     # Parse options.
+#f = open("/local/local_webservices/probanno/test.log", 'w')
+#f.write( str(datetime.datetime.now()) + "\n")
+#f.close()
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
                                      prog='ms-probanno-standalone', epilog=desc3)
 
@@ -115,6 +123,9 @@ if __name__ == '__main__':
             except urllib2.URLError as e:
                 attempts += 1
                 print type(e)
+		sys.exit(7)     # exit code 7: could not fetch fasta file
+	if os.path.getsize(fastaFile) < 10:
+		sys.exit(8)	# exit code 8: empty fasta file
     elif args.proteome.startswith("PATRIC:"):
         patric_genome_id = args.proteome[7:]
         url = "ftp://ftp.patricbrc.org/patric2/patric3/genomes/" + patric_genome_id + "/" + patric_genome_id + ".PATRIC.faa"
@@ -151,6 +162,7 @@ if __name__ == '__main__':
                 # A complex has a list of complexroles and each complexrole has a reference
                 # to a role and each role has a name. Role ID is last element in reference.
                 roleId = template['complexes'][index]['complexroles'][crindex]['templaterole_ref'].split('/')[-1]
+                # Mike Mundy used this statement, but it results in all probs being zero.
                 #complexesToRoles[complexId].append(roleId)
 		complexesToRoles[complexId].append(template['roles'][roles[roleId]]['name']) 
 
@@ -195,10 +207,10 @@ if __name__ == '__main__':
         sys.stderr.write('Failed to run probabilistic annotation algorithm: %s\n' % e.message)
         tb = traceback.format_exc()
         sys.stderr.write(tb)
-        exit(1)
+        sys.exit(1)   # exit code 1: could not run ProbAnno algorithm
 
     # Create output file with details on reaction likelihoods.
     # reactionProbs is a list of rxn (string), maxProb, TYPE (string), complexString, GPR (string)
     writeRxnprobs(reactionProbs, args.rxnprobsfile, genome_id, args.organism)  # first arg is a list
 
-    exit(0)
+    sys.exit(0)
