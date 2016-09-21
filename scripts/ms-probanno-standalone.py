@@ -45,7 +45,7 @@ AUTHORS
 '''
 
 
-def writeRxnprobs(rxnProbs, filename, genome_id, organism):
+def writeRxnprobs(rxnProbs, filename, templatefile, genome_id, organism):
     """ Write a tab-delimited file of reaction probabilities
         reactionProbs is a list of
         rxn (string), maxProb, TYPE (string), complexString, GPR (string)
@@ -55,7 +55,7 @@ def writeRxnprobs(rxnProbs, filename, genome_id, organism):
     except:
 	sys.exit(2) #exit code 2: cannot open output file for writing
     f.write("# ProbAnno run " + str(datetime.datetime.now()) + "\n")
-    f.write("# " + genome_id + " " + organism + "\n")
+    f.write("# genomeID:" + genome_id + " organism:" + organism + " templateFile:" + templatefile + "\n")
     if len(rxnProbs) == 0:
 	sys.exit(3)  # exit code 3: empty results
     for index in range(len(rxnProbs)):
@@ -211,6 +211,6 @@ if __name__ == '__main__':
 
     # Create output file with details on reaction likelihoods.
     # reactionProbs is a list of rxn (string), maxProb, TYPE (string), complexString, GPR (string)
-    writeRxnprobs(reactionProbs, args.rxnprobsfile, genome_id, args.organism)  # first arg is a list
+    writeRxnprobs(reactionProbs, args.rxnprobsfile, args.templatefile, genome_id, args.organism)  # first arg is a list
 
     sys.exit(0)
