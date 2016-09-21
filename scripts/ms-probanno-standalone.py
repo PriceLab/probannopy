@@ -55,7 +55,7 @@ def writeRxnprobs(rxnProbs, filename, templatefile, genome_id, organism):
     except:
 	sys.exit(2) #exit code 2: cannot open output file for writing
     f.write("# ProbAnno run " + str(datetime.datetime.now()) + "\n")
-    f.write("# genomeID:" + genome_id + " organism:" + organism + " templateFile:" + templatefile + "\n")
+    f.write("# genomeID:" + genome_id + " template:" + os.path.splitext(os.path.basename(templatefile))[0] + " organism:" + organism + "\n")
     if len(rxnProbs) == 0:
 	sys.exit(3)  # exit code 3: empty results
     for index in range(len(rxnProbs)):
