@@ -1,0 +1,17 @@
+[
+{"complexes": [{"complex": "cpx33265", "probability": 0.1, "type": "CPLX_NOREPS"}],
+  "gpr": "",
+  "probability": 0.01,
+  "reaction": "a2b",
+  "type": "HASCOMPLEXES"},
+{"complexes": [{"complex": "cpx33446", "probability": 0.1, "type": "CPLX_NOREPS"},
+               {"complex": "cpx33486", "probability": 0.0, "type": "CPLX_NOREPS"}],
+  "gpr": "",
+  "probability": 0.99,
+  "reaction": "a2d",
+  "type": "HASCOMPLEXES"},
+{"complexes": [{"complex": "cpx32055", "probability": 0.0, "type": "CPLX_NOREPS"}],
+  "gpr": "",
+  "probability": 0.99,
+  "reaction": "d2b",
+  "type": "HASCOMPLEXES"}]

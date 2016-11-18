@@ -1,0 +1,4 @@
+{"reactions":
+    [ {"name": "", "upper_bound": 1000.0, "lower_bound": 0.0, "metabolites": {"a": 1}, "id": "EX_A", "gene_reaction_rule": ""},
+      {"name": "", "upper_bound": 1000.0, "lower_bound": 0.0, "metabolites": {"c": 1, "b": -1}, "id": "r1", "gene_reaction_rule": ""},
+      {"name": "", "upper_bound": 1000.0, "lower_bound": 0.0, "metabolites": {"c": -1}, "objective_coefficient": 1, "id": "DM_C", "gene_reaction_rule": ""}], "metabolites": [{"compartment": "", "name": "", "id": "a"}, {"compartment": "", "name": "", "id": "b"}, {"compartment": "", "name": "", "id": "c"}], "genes": [], "id": null, "version": 1}

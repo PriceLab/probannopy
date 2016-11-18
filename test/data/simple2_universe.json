@@ -1,0 +1,17 @@
+{"reactions": [
+  {"name": "", "upper_bound": 1000, "lower_bound": 0, "metabolites": {"a": -1, "b": 1}, "id": "a2b", "gene_reaction_rule": ""},
+  {"name": "", "upper_bound": 1000, "lower_bound": 0, "metabolites": {"a": -1, "e": 1}, "id": "a2e", "gene_reaction_rule": ""},
+  {"name": "", "upper_bound": 1000, "lower_bound": 0, "metabolites": {"e": -1, "b": 1}, "id": "e2b", "gene_reaction_rule": ""},
+  {"name": "", "upper_bound": 1000, "lower_bound": 0, "metabolites": {"c": -1, "d": 1}, "id": "c2d", "gene_reaction_rule": ""},
+  {"name": "", "upper_bound": 1000, "lower_bound": 0, "metabolites": {"f": -1, "d": 1}, "id": "f2d", "gene_reaction_rule": ""},
+  {"name": "", "upper_bound": 1000, "lower_bound": 0, "metabolites": {"c": -1, "f": 1}, "id": "c2f", "gene_reaction_rule": ""},
+  {"name": "", "upper_bound": 1000, "lower_bound": 0, "metabolites": {"e": -1, "c": 1}, "id": "e2c", "gene_reaction_rule": ""},
+  {"name": "", "upper_bound": 1000, "lower_bound": 0, "metabolites": {"e": -1, "f": 1}, "id": "e2f", "gene_reaction_rule": ""}],
+  "metabolites": [
+    {"compartment": "", "name": "", "id": "a"},
+    {"compartment": "", "name": "", "id": "b"},
+    {"compartment": "", "name": "", "id": "c"},
+    {"compartment": "", "name": "", "id": "d"},
+    {"compartment": "", "name": "", "id": "e"},
+    {"compartment": "", "name": "", "id": "f"}],
+  "genes": [], "id": null, "version": 1}
