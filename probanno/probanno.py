@@ -14,12 +14,9 @@ Example: Downloading a genome, running probabilistic annotation, and exporting r
 
 
 """
-import copy
-import sys
-import os
+
 import json
 import re
-import datetime
 import requests
 import cobra
 
@@ -263,6 +260,9 @@ class ReactionProbabilities(object):
     def __init__(self, rxn_probs):
         self.data = dict([(r['reaction'], r) for r in rxn_probs]) if rxn_probs is not None else dict()
 
+    def __str__(self):
+        return self.to_json()
+
     def get_probability(self, reaction):
         """
         return the probability of a given reaction
@@ -285,7 +285,7 @@ class ReactionProbabilities(object):
         :return:
         """
         with open(path, 'w') as f:
-            f.write(json.dumps([rxn[1] for rxn in self.data.items()] if self.data is not None else None))
+            f.write(self.to_json())
 
     @staticmethod
     def from_json_file(path):
@@ -295,8 +295,7 @@ class ReactionProbabilities(object):
         :return:
         """
         with open(path, 'r') as f:
-            data = json.loads(f.read())
-            return ReactionProbabilities(data)
+            return ReactionProbabilities.from_json(f.read())
 
     def __getitem__(self, item):
         if item in self.data:
@@ -318,6 +317,15 @@ class ReactionProbabilities(object):
         :return:
         """
         pass
+
+    def to_json(self):
+        return json.dumps([rxn[1] for rxn in self.data.items()] if self.data is not None else None)
+
+    @staticmethod
+    def from_json(json_str):
+        data = json.loads(json_str)
+        return ReactionProbabilities(data)
+
 
 
 class FastaNotFoundError(Exception):
