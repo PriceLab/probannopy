@@ -34,8 +34,8 @@ def get_fasta_by_id(proteome_id, output_file):
     :return: the name of the file where the FASTA is saved (should be output_file)
     """
     taxid_pattern = re.compile('^\d{1,7}$')
-    if not taxid_pattern.match(proteome_id):  # fetch file from Uniprot
-        raise ValueError(str(proteome_id) + ' is not a valid proteome identifier')
+    # if not taxid_pattern.match(proteome_id):  # fetch file from Uniprot
+    #     raise ValueError(str(proteome_id) + ' is not a valid proteome identifier')
     url = UNIPROT_BASE_URL + proteome_id
     attempts = 0
     while attempts < 3:

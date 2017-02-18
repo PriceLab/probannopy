@@ -1,0 +1,11 @@
+appdirs==1.4.0
+-e git+https://github.com/kingb12/cobrapy.git@b175891dfa24d9355a4ac9f5c164dfe1c22d8ef8#egg=cobra
+configparser==3.5.0
+Cython==0.25.2
+logging==0.4.9.6
+packaging==16.8
+probanno==0.1
+pyparsing==2.1.10
+requests==2.13.0
+six==1.10.0
+wget==3.2
