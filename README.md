@@ -1,6 +1,12 @@
-Mike Mundy, Matt Benedict, and Terry Farrah June 2016
+Mike Mundy, Matt Benedict, Terry Farrah, and Brendan King March 2017
 Probabilistic annotation for metabolic modeling.
-Code is derived from git repository ProbModelSEED
+Code is derived from git repository ProbModelSEED.
+
+Probanno can be used in a few ways:
+ - As a python package. If you want to write a python tool that makes programatic use of probanno, this is the simplest way.
+ - As a stand-alone script. See [Probanno-Standalone](https://github.com/tfarrah/ProbAnno-Standalone)
+ - From a hosted web service. No installation needed! (Coming Soon)
+ 
 (https://github.com/ModelSEED/ProbModelSEED), with
 dependencies on servers removed.
 
@@ -50,41 +56,27 @@ INSTALLATION and USE
 * Install usearch
   (http://www.drive5.com/usearch/manual/install.html)
 
-* Create a environment variable for the directory that this README.md file is in
+* Select a directory with at least 1.4G available space (use probanno/data if
+  enough space there is the default) and download two data files to that location:
+  
+    - [PROTEIN.udb](https://drive.google.com/file/d/0B3QgVGEsPx9kS3Y3WkNuSi02ams/view?usp=sharing)
+    - [OTU_FID_ROLE](https://drive.google.com/file/d/0B3QgVGEsPx9keW9PYUhDTFFNWWc/view?usp=sharing)
+    - If you use another folder than `probanno/data`, the edit `probanno/deploy.cfg` to include the directive: `data_dir=/path/to/folder/containing/data/files/`
 
-```
-export PADIR=$(pwd)   # bash shell; modify if using csh/ksh etc.
-```
+* Edit the config file (`probanno/deploy.cfg`) to set the `search_program_path` variable to where you installed
+  usearch
 
-* Select a directory with at least 1.4G available space (use $PADIR/data if
-  enough space there) and download two data files to that location.
-
-```
-  bash
-  DATADIR=/foo/bar/baz  # fill in appropriate path. Again, this is for bash shell.
-  cd $DATADIR
-  wget -O OTU_FID_ROLE https://www.dropbox.com/s/lucq1p7zd9mmf1j/OTU_FID_ROLE?dl=0
-  wget -O PROTEIN.udb https://www.dropbox.com/s/bssrfllefzvhzvu/PROTEIN.udb?dl=0
-```
-* Edit the config file to set the `search_program_path` variable to where you installed
-  usearch and the `data_dir` variable to $DATADIR:
-
-```
-  bash
-  vim $PADIR/deploy.cfg
-```
-
-
+* Install probanno with `pip install -e`
+    - (from the directory this repository is downloaded to): `pip install -e ./probanno`
+    
+* To use, `import probanno` in a python shell or script and access functions!
 
 Example invocation:
-
-
-First argument is proteome fasta file for organism of interest OR PATRIC genome ID (search for genomes from the [PATRIC home page](https://www.patricbrc.org/portal/portal/patric/Home)) OR Uniprot ID for proteome.
-Second argument is appropriate template file of several available.
-Third argument is output filename.
-
-```bash
-cd $PADIR
-scripts/ms-probanno-standalone.py genomes/1415167.3.PATRIC.faa templates/GramNegative.json 1415167.3.probanno.out # silent; takes a few minutes.
-scripts/ms-probanno-standalone.py PATRIC:226186.12 templates/GramNegative.json 226186.12.probanno.out # silent; takes a few minutes.
+```python
+import probanno
+probanno.generate_reaction_probabilities('my_fasta_file.fasta', 'templates/GramNegative.json', genome_id='my_genome')
 ```
+
+First argument is proteome fasta file for organism of interest. You can retrieve then by PATRIC genome ID using `probanno.get_fasta_by_id` (search for genomes from the [PATRIC home page](https://www.patricbrc.org/portal/portal/patric/Home)) OR Uniprot ID for proteome.
+Second argument is appropriate template file of several available. (Included in `/templates`, e.g. `/templates/GramNegative.json`)
+
