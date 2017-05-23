@@ -98,7 +98,7 @@ def generate_reaction_probabilities(fasta_file, template_model_file, genome_id=N
         worker.cleanup()  # worker creates lots of temporary and intermediate files. Allow it to clean up
 
 
-def probabilistic_gapfill(model, universal_model, reaction_probabilities, default_penalties=None, dm_rxns=False, ex_rxns=False, **solver_parameters):
+def probabilistic_gapfill(model, universal_model, reaction_probabilities, clean_exchange_rxns=True, default_penalties=None, dm_rxns=False, ex_rxns=False, **solver_parameters):
     """
     Gapfill a model using probabilistic weights
     :param default_penalties:
@@ -107,7 +107,8 @@ def probabilistic_gapfill(model, universal_model, reaction_probabilities, defaul
     :param reaction_probabilities: reaction_probabilities dictionary
     :return:
     """
-
+    universal_model = universal_model.copy()
+    model = clean_exchange_reactions(model) if clean_exchange_rxns else model.copy()
     if default_penalties is None:
         default_penalties = {'Universal': 1, 'Exchange': 100, 'Demand': 1, 'Reverse': 75}
     penalties = default_penalties
@@ -117,9 +118,9 @@ def probabilistic_gapfill(model, universal_model, reaction_probabilities, defaul
             reactions_to_remove.append(r)
             penalties[r.id] = 0  # In the model
         elif r.id in reaction_probabilities:
-            penalties[r.id] = max(0, 1 - reaction_probabilities.get_probability(r.id)) * (penalties[r.id] if r.id in penalties else 1)
+            penalties[r.id] = max(0, 1 - reaction_probabilities[r.id]) * (penalties[r.id] if r.id in penalties else 1)
     universal_model.remove_reactions(reactions_to_remove)
-    return cobra.flux_analysis.growMatch(model, universal_model, penalties=penalties, dm_rxns=dm_rxns, ex_rxns=ex_rxns, **solver_parameters)
+    return cobra.flux_analysis.gapfill(model, universal_model, penalties=penalties, demand_reactions=dm_rxns, exchange_reactions=ex_rxns, **solver_parameters)
 
 
 def build_universal_model(template_model_file, clean_exchange_reactions=False, compartments=[0]):
@@ -156,7 +157,7 @@ def clean_exchange_reactions(model, regex='.*_e([0-9]*)$'):
     compound_regex = re.compile(regex)
     mets_to_clean = [m for m in model.metabolites if compound_regex.match(m.id)]
     for m in mets_to_clean:
-        m.remove_from_model(method='subtractive')
+        m.remove_from_model()
     return model
 
 

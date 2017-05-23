@@ -18,15 +18,6 @@ SIMPLE_2_MODEL = 'data/simple2_model.json'
 SIMPLE_2_UNIVERSE = 'data/simple2_universe.json'
 SIMPLE_2_REACTION_PROBABILITIES = 'data/simple2_reaction_probs.json'
 
-if __name__ == "__main__":
-    sys.path.insert(0, "../..")
-    from cobra.core import Model, Reaction, Metabolite
-    from cobra.flux_analysis import *
-    sys.path.pop(0)
-else:
-    from cobra.core import Model, Reaction, Metabolite
-    from cobra.solvers import get_solver_name
-    from cobra.flux_analysis import *
 
 
 @contextmanager
@@ -52,11 +43,7 @@ class TestProbabilisticAnnotation(TestCase):
         Test the probabilistic gap-filling approach
         :return:
         """
-        # Adapted from test_gapfilling in test.cobra.flux_analysis
-        try:
-            solver = get_solver_name(mip=True)
-        except:
-            self.skipTest("no MILP solver found")
+
         # Simple Test Case 1
         model1 = cobra.io.json.load_json_model(SIMPLE_1_MODEL)
         universe1 = cobra.io.json.load_json_model(SIMPLE_1_UNIVERSE)
@@ -89,12 +76,6 @@ class TestProbabilisticAnnotation(TestCase):
         self.assertTrue('c2f' not in reaction_ids)
         self.assertTrue('c2d' not in reaction_ids)
         self.assertTrue('e2c' not in reaction_ids)
-
-
-
-
-
-
 
 
 # make a test suite to run all of the tests
