@@ -8,6 +8,5 @@ setup(name='probanno',
       license='MIT',
       packages=['lib', 'test'],
       install_requires=[
-          'cobra',
-      ],
+        ],
       zip_safe=False)
