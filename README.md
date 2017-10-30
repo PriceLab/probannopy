@@ -48,12 +48,9 @@ Please cite all three references above in any work that makes use of this softwa
 INSTALLATION and USE
 --------------------
 
-* Check that python and the required modules are installed.
-  Required modules are  argparse, json, sys, os, time, traceback, requests, re,
-  wget, logging, subprocess, shutil, math, tempfile, datetime, urllib2,
-  ConfigParser
+* Check that python and the required modules are installed. This can be done by navigating to the probanno directory and installing all requirements with pip: `pip install -r requirements.txt`
 
-* Install usearch
+* Install usearch binary
   (http://www.drive5.com/usearch/manual/install.html)
 
 * Select a directory with at least 1.4G available space (use probanno/data if
@@ -61,10 +58,10 @@ INSTALLATION and USE
   
     - [PROTEIN.udb](https://drive.google.com/file/d/0B3QgVGEsPx9kS3Y3WkNuSi02ams/view?usp=sharing)
     - [OTU_FID_ROLE](https://drive.google.com/file/d/0B3QgVGEsPx9keW9PYUhDTFFNWWc/view?usp=sharing)
-    - If you use another folder than `probanno/data`, the edit `probanno/deploy.cfg` to include the directive: `data_dir=/path/to/folder/containing/data/files/`
+    - If you use another folder than `probanno/data`, then edit `probanno/deploy.cfg` to include the directive: `data_dir=/path/to/folder/containing/data/files/`
 
 * Edit the config file (`probanno/deploy.cfg`) to set the `search_program_path` variable to where you installed
-  usearch
+  usearch binary
 
 * Install probanno with `pip install -e`
     - (from the directory this repository is downloaded to): `pip install -e ./probanno`
