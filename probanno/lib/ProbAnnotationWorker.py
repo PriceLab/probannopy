@@ -133,12 +133,18 @@ class ProbAnnotationWorker:
                      '-accel', self.config['usearch_accel'],
                      '-threads', self.config['search_program_threads'],
                      '-blast6out', blastResultFile ]
+        elif self.config['search_program'] == 'diamond':
+            args = [self.config['search_program_path'], 'blastp', '--query', queryFile,
+                    '--db', self.dataParser.SearchFiles['protein_dmnd_file'],
+                    '--evalue', self.config['search_program_evalue'],
+                    '--threads', self.config['search_program_threads'], '--more-sensitive',
+                    '-k', '0', '-o', blastResultFile, '--outfmt', '6']
         else:
             args = [ self.config['search_program_path'], '-query', queryFile,
                      '-db', self.dataParser.DataFiles['protein_fasta_file'],
                      '-outfmt', '6', '-evalue', self.config['search_program_evalue'],
                      '-num_threads', self.config['search_program_threads'],
-                     '-out', blastResultFile ]
+                     '-out', blastResultFile]
 
         # Run the command to search for proteins against subsystem proteins.
         cmd = ' '.join(args)

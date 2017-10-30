@@ -97,6 +97,8 @@ class ProbAnnotationParser:
         self.SearchFiles = dict()
         if self.searchProgram == 'usearch':
             self.SearchFiles['protein_udb_file'] = os.path.join(self.dataFolderPath, 'PROTEIN.udb')
+        elif self.searchProgram == 'diamond':
+            self.SearchFiles['protein_dmnd_file'] = os.path.join(self.dataFolderPath, 'PROTEIN.dmnd')
         else:
             self.SearchFiles['protein_otu_index_file'] = os.path.join(self.dataFolderPath, 'PROTEIN_FASTA.pin')
             self.SearchFiles['protein_otu_sequence_file'] = os.path.join(self.dataFolderPath, 'PROTEIN_FASTA.psq')
