@@ -89,7 +89,7 @@ class ProbAnnotationParser:
         # Paths to files with source data.
         self.DataFiles = dict()
         self.DataFiles['otu_fid_role_file'] = os.path.join(self.dataFolderPath, 'OTU_FID_ROLE')
-#        self.DataFiles['protein_fasta_file'] = os.path.join(self.dataFolderPath, 'PROTEIN_FASTA')
+        self.DataFiles['protein_fasta_file'] = os.path.join(self.dataFolderPath, 'PROTEIN_FASTA')
 #        self.DataFiles['complex_role_file'] = os.path.join(self.dataFolderPath, 'COMPLEX_ROLE')
 #        self.DataFiles['reaction_complex_file'] = os.path.join(self.dataFolderPath, 'REACTION_COMPLEX')
 
