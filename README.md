@@ -1,3 +1,5 @@
+**Note: the current implementation of `probannopy` is compatible with Python 2.7.X. An upgrade for python3 support is in progress**
+
 Mike Mundy, Matt Benedict, Terry Farrah, and Brendan King March 2017
 Probabilistic annotation for metabolic modeling.
 Code is derived from git repository ProbModelSEED.
