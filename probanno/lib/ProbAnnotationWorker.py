@@ -52,10 +52,10 @@ class ProbAnnotationWorker:
         serviceName = os.environ.get('KB_SERVICE_NAME', 'ProbAnno-Standalone')
         topDir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
         cfg = ConfigParser()
-        print "Config File: ", os.path.join(topDir, 'deploy.cfg')
+        print("Config File: ", os.path.join(topDir, 'deploy.cfg'))
         cfg.read(os.path.join(topDir, 'deploy.cfg'))
         self.config = dict()
-        print "Config Items: ", cfg.sections()
+        print("Config Items: ", cfg.sections())
         for nameval in cfg.items(serviceName):
             self.config[nameval[0]] = nameval[1]
         if 'work_dir' not in self.config.keys():
