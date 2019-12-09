@@ -6,8 +6,8 @@ import tempfile
 import logging
 import datetime
 from operator import itemgetter
-from ProbAnnotationParser import ProbAnnotationParser
-from ConfigParser import ConfigParser
+from lib.ProbAnnotationParser import ProbAnnotationParser
+import configparser
 
 # Exception thrown when no features are found in Genome object
 class NoFeaturesError(Exception):
@@ -51,7 +51,7 @@ class ProbAnnotationWorker:
         # Get the configuration variables.
         serviceName = os.environ.get('KB_SERVICE_NAME', 'ProbAnno-Standalone')
         topDir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
-        cfg = ConfigParser()
+        cfg = configparser.ConfigParser()
         print("Config File: ", os.path.join(topDir, 'deploy.cfg'))
         cfg.read(os.path.join(topDir, 'deploy.cfg'))
         self.config = dict()
@@ -65,7 +65,7 @@ class ProbAnnotationWorker:
         
         # Create a logger.
         if not os.path.exists(self.config['log_dir']):
-            os.makedirs(self.config['log_dir'], 0775)
+            os.makedirs(self.config['log_dir'], 0O775)
         logging.basicConfig(filename=self.config['log_dir']+'/ms-probanno-%s.log' %(datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")),
                             format='%(asctime)-15s %(levelname)-8s %(message)s')
         self.logger = logging.getLogger(serviceName)
@@ -80,7 +80,7 @@ class ProbAnnotationWorker:
         
         # Create a work directory for storing temporary files.
         if not os.path.exists(self.config['work_dir']):
-            os.makedirs(self.config['work_dir'], 0775)
+            os.makedirs(self.config['work_dir'], 0O775)
         self.workFolder = tempfile.mkdtemp(dir=self.config['work_dir'], prefix='')
 
         return

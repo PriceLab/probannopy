@@ -108,7 +108,7 @@ class ProbAnnotationParser:
 
         # Create the data folder if it does not exist.
         if not os.path.exists(self.dataFolderPath):
-            os.makedirs(self.dataFolderPath, 0775)
+            os.makedirs(self.dataFolderPath, 0O775)
 
         return
 
@@ -302,7 +302,7 @@ class ProbAnnotationParser:
             queryid = fields[0]
             targetid = fields[1]
             if float(fields[11]) < 0.0: # Throw out alignments with a negative bit score
-                print 'throwing out %s' %(line)
+                print('throwing out {0}'.format(line))
                 continue
             logeval = -1.0 * math.log10(float(fields[10]) + MIN_EVALUE)
             tup = ( targetid, logeval )
@@ -418,7 +418,7 @@ class ProbAnnotationParser:
             for line in handle:
                 fields = line.strip('\r\n').split('\t')
                 if fields[0] == lastRxn:
-                    print fields
+                    print(fields)
                 else:
                     lastRxn = fields[0]
                 keggReactionList.append( [ fields[0], fields[1], fields[2] ] )

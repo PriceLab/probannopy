@@ -46,7 +46,7 @@ def get_fasta_by_id(proteome_id, output_file):
             content = response.content
             if len(content) < 10:
                 raise FastaNotFoundError()
-            with open(output_file, 'w') as f:
+            with open(output_file, 'wb') as f:
                 f.write(content)
             break
         except requests.HTTPError as e:
