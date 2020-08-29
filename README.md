@@ -1,4 +1,4 @@
-**Note: the current implementation of `probannopy` is compatible with Python 2.7.X. An upgrade for python3 support is in progress**
+**New!**: the current implementation of `probannopy` is compatible with Python 3.7+. Legacy support for python 2.7.X is maintained on the `python2` branch
 
 Mike Mundy, Matt Benedict, Terry Farrah, and Brendan King March 2017
 Probabilistic annotation for metabolic modeling.
@@ -50,7 +50,7 @@ Please cite all three references above in any work that makes use of this softwa
 INSTALLATION and USE
 --------------------
 
-* Check that python and the required modules are installed. This can be done by navigating to the probanno directory and installing all requirements with pip: `pip install -r requirements.txt`
+* Check that python3 and the required modules are installed. This can be done by navigating to the probanno directory and installing all requirements with pip: `pip install -r requirements.txt`
 
 * Install usearch binary
   (http://www.drive5.com/usearch/manual/install.html)
@@ -64,6 +64,9 @@ INSTALLATION and USE
 
 * Edit the config file (`probanno/deploy.cfg`) to set the `search_program_path` variable to where you installed
   usearch binary
+
+* Install dependencies
+    - (from the directory this repository is downloaded to): `pip install -r probanno/requirements.txt`
 
 * Install probanno with `pip install -e`
     - (from the directory this repository is downloaded to): `pip install -e ./probanno`

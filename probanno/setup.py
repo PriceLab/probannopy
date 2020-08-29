@@ -7,6 +7,7 @@ setup(name='probanno',
       author_email='bking@systemsbiology.org',
       license='MIT',
       packages=['lib', 'test'],
+      python_requires='>=3',
       install_requires=[
         ],
       zip_safe=False)

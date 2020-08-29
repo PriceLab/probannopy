@@ -1,1 +1,1 @@
-from probanno import *
+from probanno.probanno import *
